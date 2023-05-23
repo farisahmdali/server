@@ -12,6 +12,8 @@ router.post('/reg', async (req, res, next) => {
     password,
     name,
   } = req.body.reg;
+  try{
+  email = email.toLowerCase()
   password = await bcrypt.hash(password, 10)
   let user = await db.get().collection('users').findOne({ email })
   console.log(user);
@@ -23,7 +25,9 @@ router.post('/reg', async (req, res, next) => {
 
 
   }
-
+  }catch(err){
+    console.log(err);
+  }
   res.send(succes)
 });
 
@@ -32,6 +36,9 @@ router.get('/signin', async (req, res) => {
     email,
     password
   } = req.query
+  email = email?.toLowerCase()
+
+
   let pass = false;
   let user
   try {
@@ -72,6 +79,8 @@ router.post('/updateUser', async (req, res) => {
   } = req.body
   console.log(_id);
   try {
+  email = email.toLowerCase()
+
     db.get().collection('users').updateOne({ _id: ObjectId(_id) }, {
       $set: {
         email: email,
@@ -106,6 +115,8 @@ router.get('/admin', async (req, res) => {
   let pass = false;
   console.log('hello');
   try {
+  email = email.toLowerCase()
+
     let user = await db.get().collection('users').findOne({ Admin: true, email })
     console.log(user);
     if(user){
